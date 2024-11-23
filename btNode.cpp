@@ -8,7 +8,7 @@ void bst_insert(btNode*& root, int newInt)
    newNode->left = 0;
    newNode->right = 0;
 
-   if(!root)
+   if(root == 0)
    {
       root = newNode;
       return;
@@ -16,9 +16,14 @@ void bst_insert(btNode*& root, int newInt)
 
    btNode* runner = root;
 
-   while(true)
+   while(runner != 0)
    {
-      if(newInt == runner->data) return;
+      if(newInt == runner->data)
+      {
+         delete newNode;
+         return;
+      } 
+
       else if(newInt < runner->data)
       {
          if(runner->left == 0)
@@ -44,18 +49,18 @@ void bst_insert(btNode*& root, int newInt)
 // write definition for bst_remove here
 bool bst_remove(btNode*& root, int remInt)
 {
-   if(!root) return false;
+   if(root == 0) return false;
 
-   if(remInt > root->data)
-      return bst_remove(root->right, remInt);
-
-   else if(remInt < root->data)
+   if(remInt < root->data)
       return bst_remove(root->left, remInt);
+
+   else if(remInt > root->data)
+      return bst_remove(root->right, remInt);
    
    else
    {
       // Case 1: is a leaf with no children
-      if(!root->left && !root->right)
+      if(root->left == 0 && root->right == 0)
       {
          delete root;
          root = 0;
@@ -63,7 +68,7 @@ bool bst_remove(btNode*& root, int remInt)
       }
 
       // Case 2: one child
-      else if(!root->left)
+      else if(root->left == 0)
       {
          btNode* temp = root;
          root = temp->right;
@@ -71,7 +76,7 @@ bool bst_remove(btNode*& root, int remInt)
          return true;
       }
 
-      else if (!root->right)
+      else if (root->right == 0)
       {
          btNode* temp = root;
          root = temp->left;
@@ -84,11 +89,11 @@ bool bst_remove(btNode*& root, int remInt)
       {
          // Find the inorder successor (smallest value in right subtree)
          btNode* successor = root->right;
-         while (successor->left) {
+         while (successor->left) 
+         {
             successor = successor->left;
          }
          
-         // Copy successor's data to this node
          root->data = successor->data;
          
          // Remove the successor (which will be Case 1 or Case 2)
@@ -102,21 +107,13 @@ bool bst_remove(btNode*& root, int remInt)
 
 void bst_remove_max(btNode*& root)
 {
-   if(!root) return;
-   
-   if(!root->left && !root->right)
-   {
-      btNode* temp = root;
-      delete root;
-      temp = 0;
-      return;
-   }
+   if(root == 0) return;
 
-   if(!root->right)
+   if(root->right == 0)
    {
       btNode* temp = root;
-      delete root;
-      root = temp->left;
+      root = root->left;
+      delete temp;
       return;
    }
 
